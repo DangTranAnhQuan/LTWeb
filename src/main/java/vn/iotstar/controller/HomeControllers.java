@@ -9,6 +9,11 @@ import java.io.IOException;
 
 @WebServlet(urlPatterns = "/home")
 public class HomeControllers extends HttpServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.getRequestDispatcher("/view/home.jsp").forward(req, resp);

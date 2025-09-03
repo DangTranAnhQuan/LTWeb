@@ -11,15 +11,13 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User login(String username, String password) {
-		User user = this.get(username);
-		if (user != null && password.equals(user.getPassWord())) {
-			return user;
-		}
-		return null;
+		if (username == null || password == null)
+			return null;
+		return userDao.findByUsernameAndPassword(username.trim(), password.trim());
 	}
 
 	@Override
 	public User get(String username) {
-		return userDao.get(username);
+		return userDao.findByUsername(username);
 	}
 }

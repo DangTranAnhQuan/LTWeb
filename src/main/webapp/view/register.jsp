@@ -1,14 +1,14 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Đăng nhập</title>
+<title>Đăng ký</title>
 
-
+<!-- Bootstrap 3 + Font Awesome 4 -->
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <link rel="stylesheet"
@@ -19,7 +19,7 @@ body {
 	background: #f7f7f7;
 }
 
-.login-card {
+.card {
 	max-width: 520px;
 	margin: 50px auto;
 	background: #fff;
@@ -29,80 +29,95 @@ body {
 	padding: 25px 30px 30px;
 }
 
-.login-title {
+.title {
 	text-align: center;
 	margin: 5px 0 20px;
 	color: #6a6a6a;
 }
 
-.login-btn {
+.btn-full {
 	width: 100%;
 }
 
-.login-meta {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
-
-.login-footer {
+.footer {
 	text-align: center;
 	margin-top: 18px;
 	color: #777;
 }
 
-.login-footer a {
+.footer a {
 	font-weight: 600;
 }
 </style>
 </head>
 <body>
 
-	<div class="login-card">
-		<h3 class="login-title">Đăng Nhập Vào Hệ Thống</h3>
+	<div class="card">
+		<h3 class="title">Tạo tài khoản mới</h3>
 
 		<c:if test="${not empty alert}">
 			<div class="alert alert-danger" role="alert"
 				style="margin-bottom: 18px;">${alert}</div>
 		</c:if>
 
-		<form action="${pageContext.request.contextPath}/login" method="post"
+		<form action="<c:url value='/register'/>" method="post"
 			autocomplete="off">
 			<div class="form-group">
-				<label class="control-label sr-only" for="username">Tài
-					khoản</label>
 				<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-user"></i></span> <input
-						type="text" class="form-control" id="username" name="username"
+						type="text" class="form-control" name="username"
 						placeholder="Tài khoản" required>
 				</div>
 			</div>
 
 			<div class="form-group">
-				<label class="control-label sr-only" for="password">Mật khẩu</label>
+				<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-user"></i></span> <input
+						type="text" class="form-control" name="fullName"
+						placeholder="Họ tên" required>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+					<input type="email" class="form-control" name="email"
+						placeholder="Nhập Email" required>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-phone"></i></span>
+					<input type="text" class="form-control" name="phone"
+						placeholder="Số điện thoại">
+				</div>
+			</div>
+
+			<div class="form-group">
 				<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-lock"></i></span> <input
-						type="password" class="form-control" id="password" name="password"
+						type="password" class="form-control" name="password"
 						placeholder="Mật khẩu" required>
 				</div>
 			</div>
 
-			<div class="form-group login-meta">
-				<label class="checkbox-inline" style="margin-left: 2px;"> <input
-					type="checkbox" name="remember"> Nhớ tôi
-				</label> <a href="<c:url value='/view/ForgotPassword.jsp'/>" class="small">Quên
-					mật khẩu?</a>
+			<div class="form-group">
+				<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-lock"></i></span> <input
+						type="password" class="form-control" name="confirmPassword"
+						placeholder="Nhập lại mật khẩu" required>
+				</div>
 			</div>
 
-			<!-- Submit -->
-			<button type="submit" class="btn btn-primary login-btn">Đăng
-				nhập</button>
+			<button type="submit" class="btn btn-primary btn-full">Tạo
+				tài khoản</button>
 
-			<!-- Footer -->
-			<div class="login-footer">
-				Nếu bạn chưa có tài khoản trên hệ thống, thì hãy <a
-					href="<c:url value='/register'/>">Đăng ký</a>
+			<div class="footer">
+				Nếu bạn đã có tài khoản, hãy <a
+					href="<c:url value='view/login.jsp'/>">Đăng nhập</a>
 			</div>
+
 		</form>
 	</div>
 
