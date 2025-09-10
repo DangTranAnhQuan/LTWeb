@@ -3,7 +3,6 @@ package vn.iotstar.controller;
 import java.io.IOException;
 import java.util.List;
 
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,17 +13,23 @@ import vn.iotstar.model.Category;
 import vn.iotstar.services.CategoryService;
 import vn.iotstar.services.impl.CategoryServiceImpl;
 
-@WebServlet(urlPatterns = { "/admin/category/list" })
+@WebServlet(urlPatterns = "/admin/category/list")
 public class CategoryListController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
+  private final CategoryService categoryService = new CategoryServiceImpl();
 
-	private final CategoryService cateService = new CategoryServiceImpl();
+  @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+      throws ServletException, IOException {
+    req.setCharacterEncoding("UTF-8");
+    resp.setCharacterEncoding("UTF-8");
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		List<Category> cateList = cateService.getAll();
-		req.setAttribute("cateList", cateList);
-		RequestDispatcher dispatcher = req.getRequestDispatcher("/views/admin/listcategory.jsp");
-		dispatcher.forward(req, resp);
-	}
+    List<Category> cateList = categoryService.getAll();
+    req.setAttribute("cateList", cateList);
+
+    req.setAttribute("pageTitle", "Quản lý Danh mục");
+    req.setAttribute("currentMenu", "cat-list");
+    req.setAttribute("view", "/view/admin/category-list.jsp");
+    req.getRequestDispatcher("/WEB-INF/layout/admin.jsp").forward(req, resp);
+  }
 }
+

@@ -1,50 +1,57 @@
 package vn.iotstar.model;
 
-public class Category {
-	private int cateid;
-	private String catename;
-	private String icon;
-	private int userId;
+import java.io.Serializable;
 
-	public Category() {
-	}
+public class Category implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-	public Category(int cateid, String catename, String icon, int userId) {
-		this.cateid = cateid;
-		this.catename = catename;
-		this.icon = icon;
-		this.userId = userId;
-	}
+    private Integer cateid;    
+    private String  catename;  
+    private String  icon;      
+    private Integer userId;     
 
-	public int getCateid() {
-		return cateid;
-	}
+    public Category() {}
 
-	public void setCateid(int cateid) {
-		this.cateid = cateid;
-	}
+    public Category(Integer cateid, String catename, String icon, Integer userId) {
+        this.cateid = cateid;
+        this.catename = catename;
+        this.icon = icon;
+        this.userId = userId;
+    }
 
-	public String getCatename() {
-		return catename;
-	}
+    public Integer getCateid() {
+        return cateid;
+    }
+    public void setCateid(Integer cateid) {
+        this.cateid = cateid;
+    }
 
-	public void setCatename(String catename) {
-		this.catename = catename;
-	}
+    public String getCatename() {
+        return catename;
+    }
+    public void setCatename(String catename) {
+        this.catename = catename;
+    }
 
-	public String getIcon() {
-		return icon;
-	}
+    public String getIcon() {
+        return icon;
+    }
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
+    public Integer getUserId() {
+        return userId;
+    }
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
-	public int getUserId() {
-		return userId;
-	}
-
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
+    @Override
+    public String toString() {
+        return "Category [cateid=" + cateid +
+               ", catename=" + catename +
+               ", icon=" + icon +
+               ", userId=" + userId + "]";
+    }
 }

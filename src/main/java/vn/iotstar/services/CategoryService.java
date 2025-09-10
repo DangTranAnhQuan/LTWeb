@@ -8,11 +8,15 @@ public interface CategoryService {
 
 	void edit(Category category);
 
+	void update(Category category);
+
 	void delete(int id);
 
 	Category get(int id);
 
 	Category get(String name);
+
+	Category findById(int id);
 
 	List<Category> getAll();
 

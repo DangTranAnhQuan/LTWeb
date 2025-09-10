@@ -20,4 +20,26 @@ public class UserServiceImpl implements UserService {
 	public User get(String username) {
 		return userDao.findByUsername(username);
 	}
+	
+	@Override
+	public User getByEmail(String email) {
+	    if (email == null || email.isBlank()) return null;
+	    return userDao.findByEmail(email.trim());
+	}
+
+	@Override
+	public boolean updatePasswordByEmail(String email, String newPassword) {
+	    if (email == null || newPassword == null 
+	            || email.isBlank() || newPassword.isBlank()) {
+	        return false;
+	    }
+	    return userDao.updatePasswordByEmail(email.trim(), newPassword.trim());
+	}
+	
+	@Override
+	public void update(User user) {
+	    userDao.update(user);   
+	}
+
+
 }

@@ -10,41 +10,59 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import vn.iotstar.model.Category;
+import vn.iotstar.model.User;
 import vn.iotstar.services.CategoryService;
 import vn.iotstar.services.impl.CategoryServiceImpl;
 
-@WebServlet(urlPatterns = { "/admin/category/edit" })
+@WebServlet(urlPatterns = "/admin/category/edit")
 public class CategoryEditController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
-	private final CategoryService cateService = new CategoryServiceImpl();
-
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String id = req.getParameter("id");
-		if (id != null && !id.isBlank()) {
-			Category category = cateService.get(Integer.parseInt(id));
-			req.setAttribute("category", category);
-		}
-		RequestDispatcher dispatcher = req.getRequestDispatcher("/views/admin/editcategory.jsp");
-		dispatcher.forward(req, resp);
-	}
+	private final CategoryService categoryService = new CategoryServiceImpl();
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("UTF-8");
-		resp.setCharacterEncoding("UTF-8");
 
-		String idStr = req.getParameter("id");
-		String name = req.getParameter("name");
-		String icon = req.getParameter("icon");
+		Integer id = parseInt(req.getParameter("id"));
+		String name = trim(req.getParameter("name"));
+		String icon = trim(req.getParameter("icon"));
 
-		Category c = new Category();
-		c.setCateid(Integer.parseInt(idStr));
-		c.setCatename(name);
-		c.setIcon(icon == null || icon.isBlank() ? null : icon);
+		if (id == null || isBlank(name)) {
+			resp.sendRedirect(req.getContextPath() + "/admin/category/list?err=Thiếu+tham+số");
+			return;
+		}
 
-		cateService.edit(c);
-		resp.sendRedirect(req.getContextPath() + "/admin/category/list");
+		try {
+			Category c = categoryService.findById(id);
+			if (c == null) {
+				resp.sendRedirect(req.getContextPath() + "/admin/category/list?err=Không+tồn+tại");
+				return;
+			}
+
+			c.setCatename(name);
+			c.setIcon(icon);
+			categoryService.update(c);
+
+			resp.sendRedirect(req.getContextPath() + "/admin/category/list?msg=Đã+cập+nhật");
+		} catch (Exception e) {
+			resp.sendRedirect(req.getContextPath() + "/admin/category/list?err=Lỗi+lưu");
+		}
+
+	}
+
+	private static String trim(String s) {
+		return s == null ? null : s.trim();
+	}
+
+	private static boolean isBlank(String s) {
+		return s == null || s.isBlank();
+	}
+
+	private static Integer parseInt(String s) {
+		try {
+			return (s == null || s.isBlank()) ? null : Integer.valueOf(s);
+		} catch (NumberFormatException e) {
+			return null;
+		}
 	}
 }

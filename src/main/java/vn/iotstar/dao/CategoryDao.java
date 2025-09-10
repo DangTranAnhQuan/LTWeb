@@ -1,6 +1,8 @@
 package vn.iotstar.dao;
 
 import java.util.List;
+import java.util.Optional;
+
 import vn.iotstar.model.Category;
 
 public interface CategoryDao {
@@ -19,4 +21,6 @@ public interface CategoryDao {
 	List<Category> search(String keyword);
 
 	List<Category> getByUser(int userId);
+	
+	Optional<Category> findById(int id);
 }

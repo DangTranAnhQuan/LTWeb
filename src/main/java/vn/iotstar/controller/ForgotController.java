@@ -33,7 +33,7 @@ public class ForgotController extends HttpServlet {
         String confirm  = req.getParameter("confirm");
 
         if (newPass == null && confirm == null) {
-            User u = userDao.getByEmail(email);
+            User u = userDao.findByEmail(email);
             if (u == null) {
                 req.setAttribute("alert", "Email không tồn tại trong hệ thống.");
             } else {

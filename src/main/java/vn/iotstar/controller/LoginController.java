@@ -2,11 +2,7 @@ package vn.iotstar.controller;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.*;
 import vn.iotstar.model.User;
 import vn.iotstar.services.UserService;
 import vn.iotstar.services.impl.UserServiceImpl;
@@ -20,8 +16,7 @@ public class LoginController extends HttpServlet {
     private static final String SESSION_ACCOUNT  = "account";
     private static final String SESSION_USERNAME = "username";
     private static final String COOKIE_REMEMBER  = "username";
-    private static final String VIEW_LOGIN       = "/views/login.jsp"; 
-    private static final String AFTER_LOGIN      = "/waiting";
+    private static final String VIEW_LOGIN       = "/view/login.jsp";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -29,7 +24,12 @@ public class LoginController extends HttpServlet {
 
         HttpSession session = req.getSession(false);
         if (session != null && session.getAttribute(SESSION_ACCOUNT) != null) {
-            resp.sendRedirect(req.getContextPath() + AFTER_LOGIN);
+            User u = (User) session.getAttribute(SESSION_ACCOUNT);
+            if (u.getRoleid() == 1) {
+                resp.sendRedirect(req.getContextPath() + "/admin/category/list");
+            } else {
+                resp.sendRedirect(req.getContextPath() + "/home");
+            }
             return;
         }
 
@@ -37,10 +37,8 @@ public class LoginController extends HttpServlet {
         if (cookies != null) {
             for (Cookie c : cookies) {
                 if (COOKIE_REMEMBER.equals(c.getName())) {
-                    session = req.getSession(true);
-                    session.setAttribute(SESSION_USERNAME, c.getValue());
-                    resp.sendRedirect(req.getContextPath() + AFTER_LOGIN);
-                    return;
+                    req.getSession(true).setAttribute(SESSION_USERNAME, c.getValue());
+                    break;
                 }
             }
         }
@@ -56,10 +54,9 @@ public class LoginController extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         resp.setCharacterEncoding("UTF-8");
 
-        String username  = req.getParameter("username");
-        String password  = req.getParameter("password");
-        String remember  = req.getParameter("remember");
-        boolean isRememberMe = "on".equals(remember);
+        String username = req.getParameter("username");
+        String password = req.getParameter("password");
+        boolean isRememberMe = "on".equals(req.getParameter("remember"));
 
         if (username == null || username.isBlank() || password == null || password.isBlank()) {
             req.setAttribute("alert", "Tài khoản hoặc mật khẩu không được rỗng");
@@ -68,19 +65,22 @@ public class LoginController extends HttpServlet {
         }
 
         UserService service = new UserServiceImpl();
-        User user = service.login(username, password);
+        User user = service.login(username.trim(), password.trim());
 
         if (user != null) {
             HttpSession session = req.getSession(true);
-            session.setAttribute("account", user);
-            session.setAttribute("username", user.getUserName());
+            session.setAttribute(SESSION_ACCOUNT, user);
+            session.setAttribute(SESSION_USERNAME, user.getUserName());
             if (isRememberMe) saveRememberMe(resp, user.getUserName());
 
-            resp.sendRedirect(req.getContextPath() + "/home");
-            return;
+            if (user.getRoleid() == 1) {
+                resp.sendRedirect(req.getContextPath() + "/admin/category/list");
+            } else {
+                resp.sendRedirect(req.getContextPath() + "/home");
+            }
         } else {
             req.setAttribute("alert", "Tài khoản hoặc mật khẩu không đúng");
-            req.getRequestDispatcher("/view/login.jsp").forward(req, resp);
+            req.getRequestDispatcher(VIEW_LOGIN).forward(req, resp);
         }
     }
 

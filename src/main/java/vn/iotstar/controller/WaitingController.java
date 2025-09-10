@@ -2,12 +2,8 @@ package vn.iotstar.controller;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.*;
 import java.io.IOException;
-
 import vn.iotstar.model.User;
 
 @SuppressWarnings("serial")
@@ -18,21 +14,30 @@ public class WaitingController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        HttpSession session = req.getSession(false); 
-        if (session != null && session.getAttribute("account") != null) {
-            User u = (User) session.getAttribute("account");
-            req.setAttribute("username", u.getUserName());
-
-            String base = req.getContextPath();
-            if (u.getRoleid() == 1) {
-                resp.sendRedirect(base + "/admin/HomeControllers");
-            } else if (u.getRoleid() == 2) {
-                resp.sendRedirect(base + "/manager/HomeControllers");
-            } else {
-                resp.sendRedirect(base + "/HomeControllers");
-            }
-        } else {
+        HttpSession session = req.getSession(false);
+        if (session == null) {
             resp.sendRedirect(req.getContextPath() + "/login");
+            return;
+        }
+
+        User u = (User) session.getAttribute("account");
+        if (u == null) {
+            resp.sendRedirect(req.getContextPath() + "/login");
+            return;
+        }
+
+        String base = req.getContextPath();
+        req.setAttribute("username", u.getUserName());
+
+        switch (u.getRoleid()) {
+            case 1: 
+                resp.sendRedirect(base + "/admin/category/list");
+                break;
+            case 2: 
+                resp.sendRedirect(base + "/home");
+                break;
+            default:
+                resp.sendRedirect(base + "/home");
         }
     }
 
