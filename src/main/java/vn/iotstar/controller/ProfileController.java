@@ -68,7 +68,7 @@ public class ProfileController extends HttpServlet {
                 return;
             }
 
-            String uploadRoot = req.getServletContext().getRealPath("/uploads/avatars");
+            String uploadRoot = req.getServletContext().getRealPath("/uploads/screenshots");
             Files.createDirectories(Paths.get(uploadRoot));
 
             String ext = ct.contains("png") ? ".png" : ".jpg";
@@ -77,7 +77,7 @@ public class ProfileController extends HttpServlet {
                 Files.copy(is, Paths.get(uploadRoot, fileName), StandardCopyOption.REPLACE_EXISTING);
             }
 
-            imagePath = "/uploads/avatars/" + fileName; 
+            imagePath = "/uploads/screenshots/" + fileName; 
         }
 
         u.setFullName(fullName);
