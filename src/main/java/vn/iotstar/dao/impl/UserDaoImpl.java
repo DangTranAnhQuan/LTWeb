@@ -1,96 +1,170 @@
 package vn.iotstar.dao.impl;
 
-import vn.iotstar.dao.UserDao;
-import vn.iotstar.model.User;
-import vn.iotstar.controller.DBConnection;
+import java.util.List;
 
-import java.sql.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+
+import vn.iotstar.controller.JPAConfigs;
+import vn.iotstar.dao.UserDao;
+import vn.iotstar.entity.User;
 
 public class UserDaoImpl implements UserDao {
 
-    private static final String BASE_SELECT =
-        "SELECT id, email, username, fullname, password, avatar, roleid, phone, createdDate " +
-        "FROM [users] ";
-
-    private User mapRow(ResultSet rs) throws SQLException {
-        User u = new User();
-        u.setId(rs.getInt("id"));
-        u.setEmail(rs.getString("email"));
-        u.setUserName(rs.getString("username"));
-        u.setFullName(rs.getString("fullname")); 
-        u.setPassWord(rs.getString("password"));
-        u.setAvatar(rs.getString("avatar"));
-        u.setRoleid(rs.getInt("roleid"));
-        u.setPhone(rs.getString("phone"));
-        Timestamp ts = rs.getTimestamp("createdDate");
-        u.setCreatedDate(ts == null ? null : new java.util.Date(ts.getTime()));
-        return u;
+    @Override
+    public User findByUsername(String username) {
+        EntityManager em = JPAConfigs.getEntityManager();
+        try {
+            TypedQuery<User> q = em.createQuery(
+                "SELECT u FROM User u WHERE u.username = :username", User.class);
+            q.setParameter("username", username);
+            q.setMaxResults(1);
+            List<User> list = q.getResultList();
+            return list.isEmpty() ? null : list.get(0);
+        } finally {
+            em.close();
+        }
     }
 
     @Override
-    public User findByUsername(String username) {
-        final String sql = BASE_SELECT + "WHERE username = ?";
-        try (Connection cn = new DBConnection().getConnection();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setString(1, username);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return mapRow(rs);
-            }
-        } catch (Exception e) { e.printStackTrace(); }
-        return null;
+    public User findByEmail(String email) {
+        EntityManager em = JPAConfigs.getEntityManager();
+        try {
+            TypedQuery<User> q = em.createQuery(
+                "SELECT u FROM User u WHERE u.email = :email", User.class);
+            q.setParameter("email", email);
+            q.setMaxResults(1);
+            List<User> list = q.getResultList();
+            return list.isEmpty() ? null : list.get(0);
+        } finally {
+            em.close();
+        }
     }
 
     @Override
     public User findByUsernameAndPassword(String username, String password) {
-        final String sql = BASE_SELECT +
-            "WHERE username = ? AND RTRIM(LTRIM([password])) = RTRIM(LTRIM(?))";
-        try (Connection cn = new DBConnection().getConnection();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setString(1, username);
-            ps.setString(2, password);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return mapRow(rs);
-            }
-        } catch (Exception e) { e.printStackTrace(); }
-        return null;
+        EntityManager em = JPAConfigs.getEntityManager();
+        try {
+            TypedQuery<User> q = em.createQuery(
+                "SELECT u FROM User u " +
+                "WHERE u.username = :username AND u.password = :password",
+                User.class);
+            q.setParameter("username", username);
+            q.setParameter("password", password);
+            q.setMaxResults(1);
+            List<User> list = q.getResultList();
+            return list.isEmpty() ? null : list.get(0);
+        } finally {
+            em.close();
+        }
     }
 
-    public User get(String username) {
-        return findByUsername(username);
+    @Override
+    public User findById(Integer id) {
+        EntityManager em = JPAConfigs.getEntityManager();
+        try {
+            return em.find(User.class, id);
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<User> findAll() {
+        EntityManager em = JPAConfigs.getEntityManager();
+        try {
+            return em.createQuery(
+                "SELECT u FROM User u ORDER BY u.id DESC", User.class)
+                .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<User> search(String kw) {
+        EntityManager em = JPAConfigs.getEntityManager();
+        try {
+            TypedQuery<User> q = em.createQuery(
+                "SELECT u FROM User u " +
+                "WHERE (:kw IS NULL OR :kw = '' " +
+                "   OR LOWER(COALESCE(u.username, '')) LIKE LOWER(CONCAT('%', :kw, '%')) " +
+                "   OR LOWER(COALESCE(u.fullName, '')) LIKE LOWER(CONCAT('%', :kw, '%')) " +
+                "   OR LOWER(COALESCE(u.email, ''))    LIKE LOWER(CONCAT('%', :kw, '%')) " +
+                "   OR LOWER(COALESCE(u.phone, ''))    LIKE LOWER(CONCAT('%', :kw, '%')) ) " +
+                "ORDER BY u.id DESC",
+                User.class);
+            q.setParameter("kw", kw);
+            return q.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public User create(User e) {
+        EntityManager em = JPAConfigs.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.persist(e);
+            em.getTransaction().commit();
+            return e;
+        } catch (RuntimeException ex) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw ex;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public void update(User user) {
+        EntityManager em = JPAConfigs.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.merge(user);
+            em.getTransaction().commit();
+        } catch (RuntimeException ex) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw ex;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public void delete(Integer id) {
+        EntityManager em = JPAConfigs.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            User u = em.find(User.class, id);
+            if (u != null) em.remove(u);
+            em.getTransaction().commit();
+        } catch (RuntimeException ex) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw ex;
+        } finally {
+            em.close();
+        }
     }
 
     @Override
     public boolean updatePasswordByEmail(String email, String newPass) {
-        final String sql = "UPDATE [users] SET [password] = ? WHERE email = ?";
-        try (Connection cn = new DBConnection().getConnection();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setString(1, newPass);
-            ps.setString(2, email);
-            return ps.executeUpdate() > 0;
-        } catch (Exception e) { e.printStackTrace(); }
-        return false;
-    }
-    
-    @Override
-    public void update(User user) {
-        String sql = "UPDATE Users SET fullName=?, phone=?, avatar=? WHERE id=?";
-        try (Connection con = new DBConnection().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setString(1, user.getFullName());
-            ps.setString(2, user.getPhone());
-            ps.setString(3, user.getAvatar());
-            ps.setInt(4, user.getId());
-
-            ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
+        EntityManager em = JPAConfigs.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            int updated = em.createQuery(
+                "UPDATE User u SET u.password = :pwd WHERE u.email = :email")
+                .setParameter("pwd", newPass)
+                .setParameter("email", email)
+                .executeUpdate();
+            em.getTransaction().commit();
+            return updated > 0;
+        } catch (RuntimeException ex) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw ex;
+        } finally {
+            em.close();
         }
     }
-
-    
-	@Override
-	public User findByEmail(String email) {
-		return null;
-	}
 }

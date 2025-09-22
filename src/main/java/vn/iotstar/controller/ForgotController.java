@@ -1,21 +1,20 @@
 package vn.iotstar.controller;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.*;
 import java.io.IOException;
 
-import vn.iotstar.dao.UserDao;
-import vn.iotstar.dao.impl.UserDaoImpl;
-import vn.iotstar.model.User;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = "/forgot")
+import vn.iotstar.services.UserService;
+import vn.iotstar.services.impl.UserServiceImpl;
+
+@WebServlet(urlPatterns = {"/forgot"})
 public class ForgotController extends HttpServlet {
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private final UserDao userDao = new UserDaoImpl();
+    private static final long serialVersionUID = 1L;
+    private final UserService userService = new UserServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -26,43 +25,22 @@ public class ForgotController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-
         req.setCharacterEncoding("UTF-8");
+
         String email = req.getParameter("email");
         String newPass = req.getParameter("password");
-        String confirm  = req.getParameter("confirm");
 
-        if (newPass == null && confirm == null) {
-            User u = userDao.findByEmail(email);
-            if (u == null) {
-                req.setAttribute("alert", "Email không tồn tại trong hệ thống.");
-            } else {
-                req.setAttribute("emailOk", true);
-                req.setAttribute("email", email);
-            }
-            req.getRequestDispatcher("/view/ForgotPassword.jsp").forward(req, resp);
-            return;
+        boolean ok = false;
+        if (email != null && !email.isBlank() && newPass != null && !newPass.isBlank()) {
+            ok = userService.updatePasswordByEmail(email.trim(), newPass.trim());
         }
 
-        if (email == null || email.isEmpty()) {
-            req.setAttribute("alert", "Thiếu email xác nhận.");
-            req.getRequestDispatcher("/view/ForgotPassword.jsp").forward(req, resp);
-            return;
-        }
-        if (!newPass.equals(confirm)) {
-            req.setAttribute("alert", "Mật khẩu nhập lại không khớp.");
-            req.setAttribute("emailOk", true);
-            req.setAttribute("email", email);
-            req.getRequestDispatcher("/view/ForgotPassword.jsp").forward(req, resp);
-            return;
-        }
-
-        boolean ok = userDao.updatePasswordByEmail(email, newPass);
         if (ok) {
-            req.setAttribute("success", "Đổi mật khẩu thành công. Hãy đăng nhập lại.");
+            req.setAttribute("alert", "Đổi mật khẩu thành công! Hãy đăng nhập lại.");
+            req.getRequestDispatcher("/view/login.jsp").forward(req, resp);
         } else {
-            req.setAttribute("alert", "Không thể cập nhật mật khẩu. Thử lại sau.");
+            req.setAttribute("alert", "Không tìm thấy email hoặc dữ liệu không hợp lệ.");
+            req.getRequestDispatcher("/view/ForgotPassword.jsp").forward(req, resp);
         }
-        req.getRequestDispatcher("/view/ForgotPassword.jsp").forward(req, resp);
     }
 }

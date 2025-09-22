@@ -3,7 +3,7 @@ package vn.iotstar.controller;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import vn.iotstar.model.User;
+import vn.iotstar.entity.User;                 
 import vn.iotstar.services.UserService;
 import vn.iotstar.services.impl.UserServiceImpl;
 
@@ -25,7 +25,7 @@ public class LoginController extends HttpServlet {
         HttpSession session = req.getSession(false);
         if (session != null && session.getAttribute(SESSION_ACCOUNT) != null) {
             User u = (User) session.getAttribute(SESSION_ACCOUNT);
-            if (u.getRoleid() == 1) {
+            if (u.getRoleId() == 1) {  
                 resp.sendRedirect(req.getContextPath() + "/admin/category/list");
             } else {
                 resp.sendRedirect(req.getContextPath() + "/home");
@@ -65,15 +65,15 @@ public class LoginController extends HttpServlet {
         }
 
         UserService service = new UserServiceImpl();
-        User user = service.login(username.trim(), password.trim());
+        User user = service.login(username.trim(), password.trim()); 
 
         if (user != null) {
             HttpSession session = req.getSession(true);
             session.setAttribute(SESSION_ACCOUNT, user);
-            session.setAttribute(SESSION_USERNAME, user.getUserName());
-            if (isRememberMe) saveRememberMe(resp, user.getUserName());
+            session.setAttribute(SESSION_USERNAME, user.getUsername());
+            if (isRememberMe) saveRememberMe(resp, user.getUsername()); 
 
-            if (user.getRoleid() == 1) {
+            if (user.getRoleId() == 1) { 
                 resp.sendRedirect(req.getContextPath() + "/admin/category/list");
             } else {
                 resp.sendRedirect(req.getContextPath() + "/home");

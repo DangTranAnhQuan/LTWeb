@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sitemesh>
-	<mapping path="/admin/*"
-		decorator="/WEB-INF/decorators/admin.jsp" />
-	<mapping path="/login"
-		decorator="/WEB-INF/decorators/login.jsp" />
+  <!-- Admin pages -->
+  <mapping path="/view/admin/*" decorator="/WEB-INF/layout/admin.jsp"/>
+
+  <!-- Public pages -->
+  <mapping path="/view/*" decorator="/WEB-INF/layout/web.jsp"/>
 </sitemesh>

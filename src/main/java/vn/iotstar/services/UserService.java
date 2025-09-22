@@ -1,12 +1,21 @@
 package vn.iotstar.services;
 
-import vn.iotstar.model.User;
+import java.util.List;
+import vn.iotstar.entity.User; 
 
 public interface UserService {
     User login(String username, String password);
-    User get(String username);
-    User getByEmail(String email);
-    boolean updatePasswordByEmail(String email, String newPassword);
-    
+
+    User findByUsername(String username);
+    User findByEmail(String email);
+    User findByUsernameAndPassword(String username, String password);
+    User findById(Integer id);
+    List<User> findAll();
+    List<User> search(String kw);
+    User create(User e);
     void update(User user);
+    void delete(Integer id);
+    boolean updatePasswordByEmail(String email, String newPass);
+
+    User save(User u);
 }

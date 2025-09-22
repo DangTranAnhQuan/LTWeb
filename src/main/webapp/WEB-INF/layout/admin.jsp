@@ -4,7 +4,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title><c:out value="${pageTitle != null ? pageTitle : 'Trang chủ'}"/></title>
+  <title><c:out value="${pageTitle != null ? pageTitle : 'Admin'}"/></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet"
         href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -30,14 +30,19 @@
     <div id="navMain" class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
         <li><a href="${pageContext.request.contextPath}/home">Trang chủ</a></li>
-        <li><a href="${pageContext.request.contextPath}/category-list">Danh mục</a></li>
-        <li><a href="${pageContext.request.contextPath}/product-list">Sản phẩm</a></li>
+
+        <li><a href="${pageContext.request.contextPath}/admin/category/list">Categories</a></li>
+        <li><a href="${pageContext.request.contextPath}/admin/user/list">Users</a></li>
+        <li><a href="${pageContext.request.contextPath}/admin/video/list">Videos</a></li>
       </ul>
+
       <ul class="nav navbar-nav navbar-right">
         <c:choose>
           <c:when test="${not empty sessionScope.account}">
-            <li class="navbar-text">Xin chào, <strong><c:out value="${sessionScope.account.fullName}"/></strong></li>
-            <li><a href="${pageContext.request.contextPath}/profile">Profile</a></li>
+            <li class="navbar-text">
+              Xin chào, <strong><c:out value="${sessionScope.account.fullName}"/></strong>
+            </li>
+            <li><a href="${pageContext.request.contextPath}/profile">Hồ sơ</a></li>
             <li><a href="${pageContext.request.contextPath}/logout">Đăng xuất</a></li>
           </c:when>
           <c:otherwise>
@@ -51,8 +56,14 @@
 </nav>
 
 <div class="container container-page" style="margin-top:70px">
-  <!-- Trang con -->
-  <jsp:include page="${view}"/>
+  <c:choose>
+    <c:when test="${not empty view}">
+      <jsp:include page="${view}"/>
+    </c:when>
+    <c:otherwise>
+      <div class="alert alert-info">Thiếu biến <code>view</code> từ Controller.</div>
+    </c:otherwise>
+  </c:choose>
 </div>
 
 <footer>

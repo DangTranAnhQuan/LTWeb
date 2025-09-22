@@ -14,17 +14,16 @@ import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import vn.iotstar.model.User;
 
+import vn.iotstar.entity.User;
 @WebFilter(urlPatterns = { "/admin/*" })
 public class AuthFilter extends HttpFilter implements Filter {
     private static final long serialVersionUID = 1L;
 
+
     private static final Set<String> ALLOW_LIST = Set.of(
-        "/admin/login",          
-        "/admin/auth",        
-        "/admin/assets/",     
-        "/admin/uploads/"         
+        "/admin/assets/",
+        "/admin/uploads/"
     );
 
     private boolean isAllowed(HttpServletRequest req) {
@@ -34,8 +33,10 @@ public class AuthFilter extends HttpFilter implements Filter {
     }
 
     @Override
-    public void doFilter(jakarta.servlet.ServletRequest request, jakarta.servlet.ServletResponse response,
+    public void doFilter(jakarta.servlet.ServletRequest request,
+                         jakarta.servlet.ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
+
         HttpServletRequest req  = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
 
@@ -48,15 +49,17 @@ public class AuthFilter extends HttpFilter implements Filter {
         User account = (session != null) ? (User) session.getAttribute("account") : null;
 
         if (account == null) {
-            String returnUrl = URLEncoder.encode(req.getRequestURI()
-                                   + (req.getQueryString() != null ? "?" + req.getQueryString() : ""),
-                                   StandardCharsets.UTF_8);
+            String returnUrl = URLEncoder.encode(
+                req.getRequestURI()
+                + (req.getQueryString() != null ? "?" + req.getQueryString() : ""),
+                StandardCharsets.UTF_8
+            );
             resp.sendRedirect(req.getContextPath() + "/login?returnUrl=" + returnUrl);
             return;
         }
 
-        Integer role = account.getRoleid();
-        if (role == null || role.intValue() != 1) {
+        Integer role = account.getRoleId(); 
+        if (role == null || role.intValue() != 1) { 
             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền truy cập.");
             return;
         }
