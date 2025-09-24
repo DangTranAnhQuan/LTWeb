@@ -13,3 +13,5 @@ Nhánh week4 là bài tập tuần 4 tại lớp.
 Nhánh week5 là bài tập tuần 5 tại lớp (bài tập 6).
 
 Nhánh week5.1 là bài tập tuần 5 tại lớp (bài tập 5).
+
+Nhánh week6 là bài tập tuần 6 tại lớp (Bài tập 8)
