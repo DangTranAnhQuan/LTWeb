@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/layout-admin.html}">
+
+<section layout:fragment="content">
+	<div class="card">
+		<div
+			class="card-header d-flex justify-content-between align-items-center">
+			<h5 class="m-0">List Users</h5>
+			<a class="btn btn-sm btn-primary" th:href="@{/admin/users/add}">
+				<i class="bi bi-plus-lg"></i> Add New
+			</a>
+		</div>
+		<div class="card-body">
+			<div th:if="${message != null}" class="alert alert-success"
+				th:text="${message}"></div>
+
+			<form th:action="@{/admin/users/searchpaginated}" method="get"
+				class="row g-2 mb-3">
+				<div class="col-md-6">
+					<input type="text" class="form-control" name="username"
+						placeholder="Search by username" th:value="${username}">
+				</div>
+				<div class="col-auto">
+					<button class="btn btn-outline-primary">Search</button>
+				</div>
+			</form>
+
+			<div class="table-responsive" th:if="${userPage.hasContent()}">
+				<table class="table table-striped table-hover align-middle">
+					<thead>
+						<tr>
+							<th>User ID</th>
+							<th>Username</th>
+							<th>Full Name</th>
+							<th class="text-center">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="user : ${userPage.content}">
+							<td th:text="${user.id}"></td>
+							<td th:text="${user.username}"></td>
+							<td th:text="${user.fullName}"></td>
+							<td class="text-center"><a
+								th:href="@{/admin/users/edit/{id}(id=${user.id})}"
+								class="btn btn-outline-warning btn-sm">Edit</a> <a
+								th:href="@{/admin/users/delete/{id}(id=${user.id})}"
+								class="btn btn-outline-danger btn-sm"
+								onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<nav th:if="${userPage.totalPages > 0}">
+				<ul class="pagination justify-content-center">
+					<li class="page-item"
+						th:classappend="${userPage.first ? 'disabled' : ''}"><a
+						class="page-link"
+						th:href="@{/admin/users/searchpaginated(page=${userPage.number}, size=${userPage.size}, username=${username})}">Previous</a>
+					</li>
+					<li class="page-item" th:each="pageNumber : ${pageNumbers}"
+						th:classappend="${pageNumber == userPage.number + 1 ? 'active' : ''}">
+						<a class="page-link"
+						th:href="@{/admin/users/searchpaginated(page=${pageNumber}, size=${userPage.size}, username=${username})}"
+						th:text="${pageNumber}"></a>
+					</li>
+					<li class="page-item"
+						th:classappend="${userPage.last ? 'disabled' : ''}"><a
+						class="page-link"
+						th:href="@{/admin/users/searchpaginated(page=${userPage.number + 2}, size=${userPage.size}, username=${username})}">Next</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</section>
+</html>

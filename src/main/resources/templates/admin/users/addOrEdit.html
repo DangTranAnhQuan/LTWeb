@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/layout-admin.html}">
+
+<section layout:fragment="content" class="row justify-content-center">
+	<div class="col-lg-6">
+		<form th:action="@{/admin/users/saveOrUpdate}" th:object="${user}"
+			method="POST">
+			<div class="card">
+				<div class="card-header">
+					<h5 class="m-0" th:text="*{isEdit} ? 'Edit User' : 'Add New User'"></h5>
+				</div>
+				<div class="card-body">
+					<input type="hidden" th:field="*{id}" /> <input type="hidden"
+						th:field="*{isEdit}" />
+
+					<div class="mb-3">
+						<label for="username" class="form-label">Username:</label> <input
+							type="text" th:field="*{username}" class="form-control"
+							placeholder="Enter Username" />
+						<div class="text-danger" th:if="${#fields.hasErrors('username')}"
+							th:errors="*{username}"></div>
+					</div>
+
+					<div class="mb-3">
+						<label for="fullName" class="form-label">Full Name:</label> <input
+							type="text" th:field="*{fullName}" class="form-control"
+							placeholder="Enter Full Name" />
+						<div class="text-danger" th:if="${#fields.hasErrors('fullName')}"
+							th:errors="*{fullName}"></div>
+					</div>
+
+					<div class="mb-3">
+						<label for="password" class="form-label">Password:</label> <input
+							type="password" th:field="*{password}" class="form-control" />
+						<div class="form-text" th:if="*{isEdit}">Leave blank to keep
+							the current password.</div>
+						<div class="text-danger" th:if="${#fields.hasErrors('password')}"
+							th:errors="*{password}"></div>
+					</div>
+
+				</div>
+				<div class="card-footer d-flex gap-2">
+					<button class="btn btn-primary" type="submit">Save</button>
+					<a th:href="@{/admin/users}" class="btn btn-outline-secondary">Back</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</section>
+</html>
