@@ -29,7 +29,8 @@ public class HomeController {
 	@GetMapping({ "", "/", "/home" })
 	public String homePage(Model model) {
 
-		List<Product> productList = productService.findAll();
+//		List<Product> productList = productService.findAll();
+		List<Product> productList = productService.findAllOrderByPriceAsc(); 
 
 		model.addAttribute("products", productList);
 

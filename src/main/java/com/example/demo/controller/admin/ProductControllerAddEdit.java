@@ -137,12 +137,12 @@ public class ProductControllerAddEdit {
 			@RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
 		int currentPage = page.orElse(1);
 		int pageSize = size.orElse(5);
-		Pageable pageable = PageRequest.of(currentPage - 1, pageSize, Sort.by("title"));
+//		Pageable pageable = PageRequest.of(currentPage - 1, pageSize, Sort.by("title"));
+		 Pageable pageable = PageRequest.of(currentPage - 1, pageSize, Sort.by("price").ascending());
 
 		Page<Product> resultPage = StringUtils.hasText(title) ? productRepository.findByTitleContaining(title, pageable)
 				: productRepository.findAll(pageable);
 
-		System.out.println("====== DEBUG: TÌM THẤY " + resultPage.getTotalElements() + " SẢN PHẨM. ======");
 		
 		int totalPages = resultPage.getTotalPages();
 		if (totalPages > 0) {
