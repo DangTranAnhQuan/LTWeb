@@ -1,57 +1,134 @@
+<!-- <!DOCTYPE html> -->
+<!-- <html xmlns:th="http://www.thymeleaf.org" -->
+<!-- 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" -->
+<!-- 	layout:decorate="~{admin/layout.html}"> -->
+
+<!-- <section layout:fragment="content" class="row justify-content-center"> -->
+<!-- 	<div class="col-lg-8"> -->
+<!-- 		<form th:action="@{/admin/products/saveOrUpdate}" -->
+<!-- 			th:object="${product}" method="POST" enctype="multipart/form-data"> -->
+<!-- 			<div class="card"> -->
+<!-- 				<div class="card-header"> -->
+<!-- 					<h5 class="m-0" -->
+<!-- 						th:text="*{isEdit} ? 'Edit Product' : 'Add New Product'"></h5> -->
+<!-- 				</div> -->
+<!-- 				<div class="card-body"> -->
+<!-- 					<input type="hidden" th:field="*{id}" /> <input type="hidden" -->
+<!-- 						th:field="*{isEdit}" /> <input type="hidden" th:field="*{image}" /> -->
+
+<!-- 					<div class="mb-3"> -->
+<!-- 						<label for="title" class="form-label">Product Title:</label> <input -->
+<!-- 							type="text" th:field="*{title}" class="form-control" -->
+<!-- 							placeholder="Enter Product Title" /> -->
+<!-- 						<div class="text-danger" th:if="${#fields.hasErrors('title')}" -->
+<!-- 							th:errors="*{title}"></div> -->
+<!-- 					</div> -->
+
+<!-- 					<div class="mb-3"> -->
+<!-- 						<label for="imageFile" class="form-label">Product Image:</label> <input -->
+<!-- 							type="file" name="imageFile" class="form-control" /> -->
+<!-- 					</div> -->
+<!-- 					<div class="mb-3" th:if="*{isEdit and image != null}"> -->
+<!-- 						<label>Current Image:</label><br> <img -->
+<!-- 							th:src="@{'/uploads/' + *{image}}" alt="Current Image" -->
+<!-- 							width="150"> -->
+<!-- 					</div> -->
+
+<!-- 					<div class="mb-3"> -->
+<!-- 						<label for="categoryId" class="form-label">Category:</label> <select -->
+<!-- 							th:field="*{categoryId}" class="form-select"> -->
+<!-- 							<option value="">-- Select Category --</option> -->
+<!-- 							<option th:each="cat : ${categories}" th:value="${cat.id}" -->
+<!-- 								th:text="${cat.categoryName}"></option> -->
+<!-- 						</select> -->
+<!-- 						<div class="text-danger" -->
+<!-- 							th:if="${#fields.hasErrors('categoryId')}" -->
+<!-- 							th:errors="*{categoryId}"></div> -->
+<!-- 					</div> -->
+<!-- 				</div> -->
+<!-- 				<div class="card-footer d-flex gap-2"> -->
+<!-- 					<button class="btn btn-primary" type="submit">Save</button> -->
+<!-- 					<a th:href="@{/admin/products}" class="btn btn-outline-secondary">Back</a> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
+<!-- 		</form> -->
+<!-- 	</div> -->
+<!-- </section> -->
+<!-- </html> -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{admin/layout.html}">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout.html}">
 
 <section layout:fragment="content" class="row justify-content-center">
-	<div class="col-lg-8">
-		<form th:action="@{/admin/products/saveOrUpdate}"
-			th:object="${product}" method="POST" enctype="multipart/form-data">
-			<div class="card">
-				<div class="card-header">
-					<h5 class="m-0"
-						th:text="*{isEdit} ? 'Edit Product' : 'Add New Product'"></h5>
-				</div>
-				<div class="card-body">
-					<input type="hidden" th:field="*{id}" /> <input type="hidden"
-						th:field="*{isEdit}" /> <input type="hidden" th:field="*{image}" />
+    <div class="col-lg-8">
+        <form th:action="@{/admin/products/saveOrUpdate}" th:object="${product}" method="POST" enctype="multipart/form-data">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="m-0" th:text="*{isEdit} ? 'Edit Product' : 'Add New Product'"></h5>
+                </div>
+                <div class="card-body">
+                    <input type="hidden" th:field="*{id}" />
+                    <input type="hidden" th:field="*{isEdit}" />
+                    <input type="hidden" th:field="*{image}" />
 
-					<div class="mb-3">
-						<label for="title" class="form-label">Product Title:</label> <input
-							type="text" th:field="*{title}" class="form-control"
-							placeholder="Enter Product Title" />
-						<div class="text-danger" th:if="${#fields.hasErrors('title')}"
-							th:errors="*{title}"></div>
-					</div>
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Product Title:</label>
+                        <input type="text" th:field="*{title}" class="form-control" placeholder="Enter Product Title" />
+                        <div class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+                    </div>
 
-					<div class="mb-3">
-						<label for="imageFile" class="form-label">Product Image:</label> <input
-							type="file" name="imageFile" class="form-control" />
-					</div>
-					<div class="mb-3" th:if="*{isEdit and image != null}">
-						<label>Current Image:</label><br> <img
-							th:src="@{'/uploads/' + *{image}}" alt="Current Image"
-							width="150">
-					</div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="quantity" class="form-label">Quantity:</label>
+                            <input type="number" th:field="*{quantity}" class="form-control" />
+                            <div class="text-danger" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="price" class="form-label">Price:</label>
+                            <input type="number" step="1000" th:field="*{price}" class="form-control" />
+                            <div class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+                        </div>
+                    </div>
 
-					<div class="mb-3">
-						<label for="categoryId" class="form-label">Category:</label> <select
-							th:field="*{categoryId}" class="form-select">
-							<option value="">-- Select Category --</option>
-							<option th:each="cat : ${categories}" th:value="${cat.id}"
-								th:text="${cat.categoryName}"></option>
-						</select>
-						<div class="text-danger"
-							th:if="${#fields.hasErrors('categoryId')}"
-							th:errors="*{categoryId}"></div>
-					</div>
-				</div>
-				<div class="card-footer d-flex gap-2">
-					<button class="btn btn-primary" type="submit">Save</button>
-					<a th:href="@{/admin/products}" class="btn btn-outline-secondary">Back</a>
-				</div>
-			</div>
-		</form>
-	</div>
+                    <div class="mb-3">
+                        <label for="imageFile" class="form-label">Product Image:</label>
+                        <input type="file" name="imageFile" class="form-control" />
+                    </div>
+                    <div class="mb-3" th:if="*{isEdit and image != null}">
+                        <label>Current Image:</label><br>
+                        <img th:src="@{'/uploads/' + *{image}}" alt="Current Image" width="150">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="categoryId" class="form-label">Category:</label>
+                        <select th:field="*{categoryId}" class="form-select">
+                            <option value="">-- Select Category --</option>
+                            <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.categoryName}"></option>
+                        </select>
+                        <div class="text-danger" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="userId" class="form-label">Created By (User):</label>
+                        <select th:field="*{userId}" class="form-select">
+                            <option value="">-- Select User --</option>
+                            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"></option>
+                        </select>
+                         <div class="text-danger" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description:</label>
+                        <textarea th:field="*{description}" rows="3" class="form-control"></textarea>
+                    </div>
+                    </div>
+                <div class="card-footer d-flex gap-2">
+                    <button class="btn btn-primary" type="submit">Save</button>
+                    <a th:href="@{/admin/products}" class="btn btn-outline-secondary">Back</a>
+                </div>
+            </div>
+        </form>
+    </div>
 </section>
 </html>
