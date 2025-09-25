@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -141,6 +142,8 @@ public class ProductControllerAddEdit {
 		Page<Product> resultPage = StringUtils.hasText(title) ? productRepository.findByTitleContaining(title, pageable)
 				: productRepository.findAll(pageable);
 
+		System.out.println("====== DEBUG: TÌM THẤY " + resultPage.getTotalElements() + " SẢN PHẨM. ======");
+		
 		int totalPages = resultPage.getTotalPages();
 		if (totalPages > 0) {
 			int start = Math.max(1, currentPage - 2);
@@ -152,5 +155,11 @@ public class ProductControllerAddEdit {
 		model.addAttribute("title", title);
 		model.addAttribute("productPage", resultPage);
 		return "admin/products/searchpaginated";
+	}
+	
+	@GetMapping("/list")
+	public String listView(Model model) {
+	    model.addAttribute("products", productService.findAll());
+	    return "admin/products/list";
 	}
 }
