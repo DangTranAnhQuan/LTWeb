@@ -7,30 +7,30 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "products")
+@Table(name = "Product")
 public class Product {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-	@Column(columnDefinition = "NVARCHAR(255)")
-	private String title;
+    @Column(name = "title", columnDefinition = "NVARCHAR(255)")
+    private String title;
 
-	private int quantity;
+    private int quantity;
 
-	@Column(name = "description", columnDefinition = "NVARCHAR(MAX)")
-	private String description;
+    @Column(name = "[desc]", columnDefinition = "NVARCHAR(MAX)")
+    private String description;
 
-	private double price;
+    private double price;
+    
+    @Column(length = 255)
+    private String image;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User user;
+    @ManyToOne
+    @JoinColumn(name = "userid")
+    private User user;
 
-	@ManyToOne
-	@JoinColumn(name = "category_id")
-	private Category category;
-
-	@Column(length = 255)
-	private String image;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 }

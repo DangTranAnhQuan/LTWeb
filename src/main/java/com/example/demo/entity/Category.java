@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import java.io.Serializable;
+import java.util.Set;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,13 +21,13 @@ public class Category implements Serializable {
     @Column(name = "cate_name", columnDefinition = "NVARCHAR(255)")
     private String categoryName;              
 
-    @Column(name = "icon")
     private String icon;                       
-
-    @Column(name = "user_id", nullable = true)
+    
+    @Column(name = "user_id")
     private Integer userId;                 
     
-    @Column(name = "images", length = 255)
     private String images;
-}
 
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    private Set<Product> products;
+}
