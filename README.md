@@ -17,3 +17,5 @@ Nhánh week5.1 là bài tập tuần 5 tại lớp (bài tập 5).
 Nhánh week6 là bài tập tuần 6 tại lớp (Bài tập 8)
 
 Nhánh week6.1 là bài tập tuần 6 về nhà (Bài tập 7)
+
+Nhánh week7 là bài tập tuần 7 tại lớp (Bài tập 9)
